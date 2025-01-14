@@ -18,7 +18,7 @@ jobs:
       NODE_VERSION: "22"
 
     steps:
-      - name: Checkout code && Setup Go
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Go
@@ -26,14 +26,17 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: npm dependencies
+      - name: Check Code format
+        id: check_format
         run: |
-          cd frontend
-          npm install
+          files=$(gofmt -l ./backend)
+          if [ -n "$files" ]; then
+            echo "The following files are not formatted correctly:"
+            echo "$files"
+            exit 1
+          else
+            echo "All files are correctly formatted."
+          fi
 
       - name: Build Frontend
         run: |
@@ -47,23 +50,18 @@ jobs:
         run: |
           cd backend
           go test ./...
-    
-      - name: Check Code format
-        run: |
-          files=$(gofmt -l ./backend) && [ -z "$files" ]
-          if [ -n "$files" ]; then
-          echo "formatting_error=true" >> $GITHUB_ENV
-          echo "files=$files" >> $GITHUB_ENV
-          else
-            echo "formatting_error=false" >> $GITHUB_ENV
-          fi
 
       - name: Comment on PR if format is incorrect
-        if: ${{ github.event_name == 'pull_request' && env.formatting_error == 'true' }}
-        uses: actions/github-script@v7
+        if: ${{ github.event_name == 'pull_request' && failure() }}
+        uses: actions/github-script@v6
         with:
           script: |
-            const files = process.env.files.split("\n").filter(f => f);
+            const files = require('fs').readFileSync(process.env.GITHUB_ENV, 'utf8')
+              .split("\n")
+              .find(line => line.startsWith("files="))
+              ?.replace("files=", "")
+              .split(",")
+              .filter(f => f);
             const body = `
               ## :warning: Code Formatting Issue Detected
               The following files need formatting:
@@ -78,4 +76,3 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
-
