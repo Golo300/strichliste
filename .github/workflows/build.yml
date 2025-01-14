@@ -71,7 +71,7 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
       - name: Push report to server
-        run: scp backend/coverage.html groupX@dhbw.hoenle.xyz:/var/www/group6/test-coverage.html
+        run: scp backend/coverage.html group6@dhbw.hoenle.xyz:/var/www/group6/test-coverage.html
 
       - name: Comment on PR if format is incorrect
         if: ${{ github.event_name == 'pull_request' && failure() }}
