@@ -15,6 +15,7 @@ jobs:
 
     env:
       GO_VERSION: "1.23.4"
+      NODE_VERSION: "22"
 
     steps:
       - name: Checkout code && Setup Go
@@ -24,6 +25,20 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env..NODE_VERSION }}
+      - name: npm dependencies
+        run: npm install
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm ci
+          npx ng build
+          cp -r frontend/dist/frontend/browser backend/cmd/strichliste/frontendDist
 
       - name: Test Code
         run: |
