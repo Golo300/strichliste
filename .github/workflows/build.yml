@@ -66,12 +66,12 @@ jobs:
           echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-add ~/.ssh/id_ed25519
-          echo "dhbw.hoenle.xyz ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMPora8Qakm6IkM4q7buMq0CRPHkdB/VfFMQpe1takM" .> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
       - name: Push report to server
-      - run: scp backend/coverage.html group6@dhbw.hoenle.xyz:/var/www/group6/test-coverage.html
+        run: scp backend/coverage.html groupX@dhbw.hoenle.xyz:/var/www/group6/test-coverage.html
 
       - name: Comment on PR if format is incorrect
         if: ${{ github.event_name == 'pull_request' && failure() }}
