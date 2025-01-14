@@ -26,15 +26,6 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: npm dependencies
-        run: |
-          cd frontend
-          npm install
-
       - name: Build Frontend
         run: |
           cd frontend
