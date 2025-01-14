@@ -26,14 +26,6 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Build Frontend
-        run: |
-          cd frontend
-          npm ci
-          npx ng build
-          cd ..
-          cp -r frontend/dist/frontend/browser backend/cmd/strichliste/frontendDist
-
       - name: Test Code
         run: |
           cd backend
