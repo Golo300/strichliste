@@ -31,7 +31,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: npm dependencies
-        run: npm install
+        run: |
+          cd frontend
+          npm install
 
       - name: Build Frontend
         run: |
