@@ -49,4 +49,33 @@ jobs:
           go test ./...
     
       - name: Check Code format
-        run: files=$(gofmt -l ./backend) && [ -z "$files" ]
+        run: |
+          files=$(gofmt -l ./backend) && [ -z "$files" ]
+          if [ -n "$files" ]; then
+          echo "formatting_error=true" >> $GITHUB_ENV
+          echo "files=$files" >> $GITHUB_ENV
+          else
+            echo "formatting_error=false" >> $GITHUB_ENV
+          fi
+
+      - name: Comment on PR if format is incorrect
+        if: ${{ github.event_name == 'pull_request' && env.formatting_error == 'true' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const files = process.env.files.split("\n").filter(f => f);
+            const body = `
+              ## :warning: Code Formatting Issue Detected
+              The following files need formatting:
+              \`\`\`
+              ${files.join("\n")}
+              \`\`\`
+              Please run \`gofmt\` to fix these issues.
+            `;
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
