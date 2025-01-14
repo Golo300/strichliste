@@ -46,7 +46,7 @@ jobs:
       - name: Test Code
         run: |
           cd backend
-          go run ./...
+          go test ./...
     
       - name: Check Code format
         run: files=$(gofmt -l ./backend) && [ -z "$files" ]
