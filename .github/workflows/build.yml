@@ -56,12 +56,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const files = require('fs').readFileSync(process.env.GITHUB_ENV, 'utf8')
-              .split("\n")
-              .find(line => line.startsWith("files="))
-              ?.replace("files=", "")
-              .split(",")
-              .filter(f => f);
+            const files = process.env.files ? process.env.files.split("\n").filter(f => f) : [];
+            if (files.length === 0) {
+              core.warning("No files to format. Skipping PR comment.");
+              return;
+            }
             const body = `
               ## :warning: Code Formatting Issue Detected
               The following files need formatting:
@@ -76,3 +75,4 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+  
