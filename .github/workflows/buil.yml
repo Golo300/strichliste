@@ -1,0 +1,34 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches: 
+      - 'main'
+
+jobs:
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+
+    env:
+      GO_VERSION: "1.23.4"
+
+    steps:
+      - name: Checkout code && Setup Go
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Test Code
+        run: |
+          cd backend
+          go run ./...
+    
+      - name: Check Code format
+        run: files=$(gofmt -l ./backend) && [ -z "$files" ]
