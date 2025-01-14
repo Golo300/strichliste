@@ -56,6 +56,23 @@ jobs:
           name: test-coverage
           path: backend/coverage.html
 
+      - name: Setup SSH
+        run: |
+          # setup / start ssh auth socket which manages our ssh keys when connecting to other servers via ssh
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          # load the private key
+          mkdir ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-add ~/.ssh/id_ed25519
+          echo "dhbw.hoenle.xyz ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMPora8Qakm6IkM4q7buMq0CRPHkdB/VfFMQpe1takM" .> ~/.ssh/known_hosts
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+      - name: Push report to server
+      - run: scp backend/coverage.html group6@dhbw.hoenle.xyz:/var/www/group6/test-coverage.html
+
       - name: Comment on PR if format is incorrect
         if: ${{ github.event_name == 'pull_request' && failure() }}
         uses: actions/github-script@v6
