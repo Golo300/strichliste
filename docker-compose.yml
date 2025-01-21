@@ -1,0 +1,8 @@
+
+services:
+
+  strichliste:
+    build: ./
+    container_name: strichliste
+    ports:
+      - "8080:8080" 
