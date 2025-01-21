@@ -14,7 +14,7 @@ FROM golang:1.23-alpine as go-build
 WORKDIR /go/src/app
 
 COPY ./backend/go.mod ./backend/go.sum ./
-RUN go mod tidy
+RUN go mod download
 
 COPY ./backend/ ./
 
