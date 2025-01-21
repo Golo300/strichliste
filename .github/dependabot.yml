@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Go Modules
+  - package-ecosystem: "gomod"
+    directory: "/backend" 
+    schedule:
+      interval: "weekly"
+
+  # Angular (npm)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+
+  # Optional: GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
