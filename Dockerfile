@@ -1,14 +1,13 @@
-# Stage 1: Build Angular frontend
 FROM node:22-alpine as angular-build
 
 WORKDIR /app
 
 COPY ./frontend/package.json ./frontend/package-lock.json ./
-RUN npm install
+RUN npm ci
 
 COPY ./frontend/ ./
 
-RUN npm run build --prod
+RUN npx ng build
 
 FROM golang:1.23-alpine as go-build
 
@@ -23,17 +22,12 @@ COPY --from=angular-build /app/dist/frontend/browser /go/src/app/cmd/strichliste
 
 RUN CGO_ENABLED=0 go build -o ./strichliste ./cmd/strichliste/main.go
 
-# Stage 3: Final Image
-FROM alpine:latest
-
-RUN apk --no-cache add ca-certificates
+FROM gcr.io/distroless/static-debian12
 
 WORKDIR /app
-
 
 COPY --from=go-build /go/src/app/strichliste /app/
 
 EXPOSE 8080
 
 CMD ["/app/strichliste"]
-
