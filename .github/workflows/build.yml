@@ -57,6 +57,7 @@ jobs:
           path: backend/coverage.html
 
       - name: Setup SSH
+        if: github.ref == 'refs/heads/main' && github.actor != 'dependabot[bot]'
         run: |
           # setup / start ssh auth socket which manages our ssh keys when connecting to other servers via ssh
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
@@ -71,30 +72,5 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
       - name: Push report to server
+        if: github.ref == 'refs/heads/main' && github.actor != 'dependabot[bot]'
         run: scp backend/coverage.html group6@dhbw.hoenle.xyz:/var/www/group6/test-coverage.html
-
-      - name: Comment on PR if format is incorrect
-        if: ${{ github.event_name == 'pull_request' && failure() }}
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const files = process.env.files ? process.env.files.split("\n").filter(f => f) : [];
-            if (files.length === 0) {
-              core.warning("No files to format. Skipping PR comment.");
-              return;
-            }
-            const body = `
-              ## :warning: Code Formatting Issue Detected
-              The following files need formatting:
-              \`\`\`
-              ${files.join("\n")}
-              \`\`\`
-              Please run \`gofmt\` to fix these issues.
-            `;
-            github.rest.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
-  
