@@ -81,6 +81,9 @@ jobs:
     needs: build
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Build Image
         uses: docker/build-push-action@v6
         with:
