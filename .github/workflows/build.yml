@@ -155,4 +155,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: strichliste-${{matrix.goos}}-${{matrix.goarch}}
-          path: strichliste-${{matrix.goos}}-${{matrix.goarch}}
+          path: backend/strichliste-${{matrix.goos}}-${{matrix.goarch}}
