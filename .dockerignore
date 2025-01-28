@@ -1,0 +1,11 @@
+
+dist
+tmp
+out-tsc
+bazel-out
+
+node_modules
+.angular/cache
+
+backend/main
+backend/strichliste
