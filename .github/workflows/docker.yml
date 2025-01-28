@@ -32,4 +32,4 @@ jobs:
         with:
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
-            ghcr.io/Golo300/strichliste:latest
+            ghcr.io/golo300/strichliste:latest
