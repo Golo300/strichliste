@@ -93,7 +93,7 @@ jobs:
 
       - name: Start container
         run: |
-             docker run -d --name test-container ghcr.io/golo300/strichliste:latest
+             docker run -d --name test-container -p 8080:8080 ghcr.io/golo300/strichliste:latest
              sleep 3
 
       - name: Smoke Test
