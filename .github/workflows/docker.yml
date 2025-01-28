@@ -31,5 +31,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: ${{ github.ref == 'refs/heads/main' }}
-          tags: |
-            "ghcr.io/Golo300/strichliste:latest"
+          tags: ${{github.actor}}/strichliste:latest
