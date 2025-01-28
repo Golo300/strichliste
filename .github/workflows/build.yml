@@ -114,9 +114,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Deploy
-        uses: docker/build-push-action@v6
-        with:
-          cache-from: local
-          push: ${{ github.ref_name == 'main' }}
-          tags: ghcr.io/golo300/strichliste:latest
+      - name: Deplay
+        if: github.ref_name == 'main'
+        run: |
+            docker push ghcr.io/golo300/strichliste:latest
